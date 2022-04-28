@@ -1,0 +1,106 @@
+# sequential (simple recurrent or "Elman") network
+# (letters come in one at a time)
+
+set numHidden 40
+
+addNet word-diff -i 20
+# run for 4 steps ("intervals" because ticks-per-interval=1)
+
+addGroup input   26 INPUT
+addGroup context1 $numHidden ELMAN
+addGroup hidden1  $numHidden
+addGroup context2 $numHidden ELMAN
+addGroup hidden2  $numHidden
+addGroup output  27 OUTPUT
+elmanConnect hidden1 context1
+elmanConnect hidden2 context2
+connectGroups { input context1 } hidden1
+connectGroups { hidden1 context2 } hidden2 output
+
+# seed random number generator
+seed 12345
+# randomize weights
+resetNet
+# loadWeights word-diff.init.wt
+
+# random tests
+loadExamples word-diffrand_ex.txt -s randTrain
+loadExamples word-diffrand.test_ex.txt -s randTest
+
+# tests from matrix script
+loadExamples word-difftext_ex.txt -s textTrain
+loadExamples word-difftext.test_ex.txt -s textTest
+
+setObj unitCellSize 28
+resetPlot
+plotRow * n output 17
+plotRow 1 f
+plotRow * n hidden2 40
+plotRow * b 2 n context2 40
+plotRow 1 f
+plotRow * n hidden1 40
+plotRow * b 2 n context1 40
+plotRow 1 f
+plotRow n input 26
+drawUnits
+
+setObj input.unit(0).name  A
+setObj input.unit(1).name  B
+setObj input.unit(2).name  C
+setObj input.unit(3).name  D
+setObj input.unit(4).name  E
+setObj input.unit(5).name  F
+setObj input.unit(6).name  G
+setObj input.unit(7).name  H
+setObj input.unit(8).name  I
+setObj input.unit(9).name  J
+setObj input.unit(10).name K
+setObj input.unit(11).name L
+setObj input.unit(12).name M
+setObj input.unit(13).name N
+setObj input.unit(14).name O
+setObj input.unit(15).name P
+setObj input.unit(16).name Q
+setObj input.unit(17).name R
+setObj input.unit(18).name S
+setObj input.unit(19).name T
+setObj input.unit(20).name U
+setObj input.unit(21).name V
+setObj input.unit(22).name W
+setObj input.unit(23).name X
+setObj input.unit(24).name Y
+setObj input.unit(25).name Z
+
+setObj output.unit(0).name  A
+setObj output.unit(1).name  B
+setObj output.unit(2).name  C
+setObj output.unit(3).name  D
+setObj output.unit(4).name  E
+setObj output.unit(5).name  F
+setObj output.unit(6).name  G
+setObj output.unit(7).name  H
+setObj output.unit(8).name  I
+setObj output.unit(9).name  J
+setObj output.unit(10).name K
+setObj output.unit(11).name L
+setObj output.unit(12).name M
+setObj output.unit(13).name N
+setObj output.unit(14).name O
+setObj output.unit(15).name P
+setObj output.unit(16).name Q
+setObj output.unit(17).name R
+setObj output.unit(18).name S
+setObj output.unit(19).name T
+setObj output.unit(20).name U
+setObj output.unit(21).name V
+setObj output.unit(22).name W
+setObj output.unit(23).name X
+setObj output.unit(24).name Y
+setObj output.unit(25).name Z
+setObj output.unit(26).name END
+
+setObj learningRate 0.2
+setObj numUpdates 1000
+echo "numLinks =" [getObj numLinks]
+# 5148
+graphObject error
