@@ -16,9 +16,9 @@ def make_data(file_name : str, dataset : str, generator : example, max_len : int
     data.close()
 
 if __name__ == "__main__":
-    # generator = random_example("example generator\wordlist.txt")
-    # make_data("network/word-diffrand_ex.txt", "train", generator, 20, 1000)
-    # make_data("network/word-diffrand.test_ex.txt", "test", generator, 20, 100)
-    generator = text_example("example generator\matrix.txt")
+    generator = random_example("example generator\common_words.txt")
+    make_data("network/word-diffrand_ex.txt", "train", generator, 20, 1000)
+    make_data("network/word-diffrand.test_ex.txt", "test", generator, 20, 100)
+    generator = text_example("example generator\Thing_Explainer.txt")
     make_data("network/word-difftext_ex.txt", "train", generator, 20, 1000)
     make_data("network/word-difftext.test_ex.txt", "test", generator, 20, 100)

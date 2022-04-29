@@ -68,32 +68,26 @@ class random_example(example):
 class text_example(example):
 
     def __init__(self, file : str):
-        text_file = open(file)
-        line_list = text_file.read().splitlines()
+        text_file = open(file, encoding='utf8')
+        par_list = text_file.read().split("\n\n")
         text_file.close()
-        regex = re.compile('[^a-zA-Z ]')
-        line_list = map(lambda s : regex.sub('' ,s[s.find(":") + 2:]), filter(lambda s : ":" in s, line_list))
-        self.lines = list(line_list)
-        self.curr = iter(self.lines[0].split())
-        self.next_line = 1
-        self.word = next(self.curr)
+        regex1 = re.compile('[^a-zA-Z ]')
+        regex2 = re.compile('[-\n]')
+        par_list = map(lambda s : regex1.sub('', regex2.sub(' ', s)), par_list)
+        self.lines = list(par_list)
 
     def generate_sentence(self, max_len : int):
-        sent = self.word + " "
-        while True:
-            try:
-                self.word = next(self.curr)
-                if len(sent) + len(self.word) - sent.count(' ') > max_len:
-                    break
-                sent += f"{self.word} "
-            except StopIteration:
-                self.curr = iter(self.lines[self.next_line].split())
-                self.next_line += 1
-                if sent != "":
-                    self.word = next(self.curr)
-                    break
-                else:
-                    continue
+        curr = random.choice(self.lines).split()
+        print(curr)
+        idx = random.choice(range(len(curr)))
+        sent = curr[idx] + " "
+        idx += 1
+        while idx < len(curr):
+            word = curr[idx]
+            if len(sent) + len(word) - sent.count(' ') > max_len:
+                break
+            sent += f"{word} "
+            idx += 1
         return sent[:-1]
 
 if __name__ == "__main__":
