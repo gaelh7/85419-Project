@@ -40,11 +40,11 @@ class example:
         example += ";"
         return example
 
-    def generate_sentence(self, max_len : int):
+    def generate_sentence(self, min_len : int, max_len : int):
         pass
 
-    def generate_example(self, max_len : int, dataset : str):
-        sent = self.generate_sentence(max_len)
+    def generate_example(self, min_len : int, max_len : int, dataset : str):
+        sent = self.generate_sentence(min_len, max_len)
         return self.example_string(sent, dataset)
 
 class random_example(example):
@@ -55,12 +55,14 @@ class random_example(example):
         word_file.close()
         self.words = random.choices(word_list, k=100)
 
-    def generate_sentence(self, max_len : int):
+    def generate_sentence(self, min_len : int, max_len : int):
         sent = random.choice(self.words)
         word = random.choice(self.words)
         while len(sent) + len(word) - sent.count(' ') <= max_len:
             sent += f" {word}"
             word = random.choice(self.words)
+        if len(sent) - sent.count(' ') < min_len:
+            return self.generate_sentence(min_len, max_len)
         return sent
 
 
@@ -76,23 +78,16 @@ class text_example(example):
         par_list = map(lambda s : regex1.sub('', regex2.sub(' ', s)), par_list)
         self.lines = list(par_list)
 
-    def generate_sentence(self, max_len : int):
+    def generate_sentence(self, min_len : int, max_len : int):
         curr = random.choice(self.lines).split()
-        print(curr)
         idx = random.choice(range(len(curr)))
-        sent = curr[idx] + " "
-        idx += 1
+        sent = ''
         while idx < len(curr):
             word = curr[idx]
             if len(sent) + len(word) - sent.count(' ') > max_len:
                 break
-            sent += f"{word} "
+            sent += f'{word} '
             idx += 1
+        if len(sent) - sent.count(' ') < min_len:
+            return self.generate_sentence(min_len, max_len)
         return sent[:-1]
-
-if __name__ == "__main__":
-    print(example.example_string("Hello World", "train"))
-    generator = random_example("example generator\wordlist.txt")
-    sent = generator.generate_sentence(20)
-    print(sent)
-    print(example.example_string(sent, "train"))
