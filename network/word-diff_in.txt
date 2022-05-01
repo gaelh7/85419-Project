@@ -1,16 +1,17 @@
 # sequential (simple recurrent or "Elman") network
 # (letters come in one at a time)
 
-set numHidden 40
+set numHidden1 40
+set numHidden2 40
 
 addNet word-diff -i 20
 # run for 4 steps ("intervals" because ticks-per-interval=1)
 
 addGroup input   26 INPUT
-addGroup context1 $numHidden ELMAN
-addGroup hidden1  $numHidden
-addGroup context2 $numHidden ELMAN
-addGroup hidden2  $numHidden
+addGroup context1 $numHidden1 ELMAN
+addGroup hidden1  $numHidden1
+addGroup context2 $numHidden2 ELMAN
+addGroup hidden2  $numHidden2
 addGroup output  27 OUTPUT
 elmanConnect hidden1 context1
 elmanConnect hidden2 context2
@@ -35,11 +36,11 @@ setObj unitCellSize 28
 resetPlot
 plotRow * n output 17
 plotRow 1 f
-plotRow * n hidden2 40
-plotRow * b 2 n context2 40
+plotRow * n hidden2 $numHidden2
+plotRow * b 2 n context2 $numHidden2
 plotRow 1 f
-plotRow * n hidden1 40
-plotRow * b 2 n context1 40
+plotRow * n hidden1 $numHidden1
+plotRow * b 2 n context1 $numHidden1
 plotRow 1 f
 plotRow n input 26
 drawUnits

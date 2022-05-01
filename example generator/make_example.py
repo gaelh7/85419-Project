@@ -1,10 +1,17 @@
 
 import random
 import re
+from word_forms.word_forms import get_word_forms
+from itertools import chain
 from string import ascii_lowercase as alph
 
 alph += " "
 alph = {k: v for v, k in enumerate(alph)}
+
+def transform_word(word : str):
+    forms = tuple(set(chain(*get_word_forms(word, 0.9).values())))
+    new_word = word if len(forms) == 0 else random.choice(forms)
+    return re.sub('[^a-zA-Z]', '', new_word)
 
 class example:
 
@@ -53,14 +60,14 @@ class random_example(example):
         word_file = open(file)
         word_list = word_file.read().splitlines()
         word_file.close()
-        self.words = random.choices(word_list, k=100)
+        self.words = word_list
 
     def generate_sentence(self, min_len : int, max_len : int):
         sent = random.choice(self.words)
-        word = random.choice(self.words)
+        word = transform_word(random.choice(self.words))
         while len(sent) + len(word) - sent.count(' ') <= max_len:
             sent += f" {word}"
-            word = random.choice(self.words)
+            word = transform_word(random.choice(self.words))
         if len(sent) - sent.count(' ') < min_len:
             return self.generate_sentence(min_len, max_len)
         return sent
@@ -74,7 +81,7 @@ class text_example(example):
         par_list = text_file.read().split("\n\n")
         text_file.close()
         regex1 = re.compile('[^a-zA-Z ]')
-        regex2 = re.compile('[-\n]')
+        regex2 = re.compile('[—\-\n]')
         par_list = map(lambda s : regex1.sub('', regex2.sub(' ', s)), par_list)
         self.lines = list(par_list)
 
