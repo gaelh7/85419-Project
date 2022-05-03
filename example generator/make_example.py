@@ -1,6 +1,7 @@
 
 import random
 import re
+import json
 from word_forms.word_forms import get_word_forms
 from itertools import chain
 from string import ascii_lowercase as alph
@@ -56,23 +57,24 @@ class example:
 
 class random_example(example):
 
-    def __init__(self, file : str) -> None:
-        word_file = open(file)
-        word_list = word_file.read().splitlines()
-        word_file.close()
-        self.words = word_list
+    def __init__(self, file_name : str, match_freq=True) -> None:
+        with open(file_name) as file:
+            word_dict = json.load(file)
+        self.words = list(word_dict.keys())
+        self.freq = list(word_dict.values()) if match_freq else None
+
+    def generate_word(self):
+        return random.choices(self.words, weights=self.freq)[0]
 
     def generate_sentence(self, min_len : int, max_len : int):
-        sent = random.choice(self.words)
-        word = transform_word(random.choice(self.words))
+        sent = self.generate_word()
+        word = self.generate_word()
         while len(sent) + len(word) - sent.count(' ') <= max_len:
             sent += f" {word}"
-            word = transform_word(random.choice(self.words))
+            word = self.generate_word()
         if len(sent) - sent.count(' ') < min_len:
             return self.generate_sentence(min_len, max_len)
         return sent
-
-
 
 class text_example(example):
 

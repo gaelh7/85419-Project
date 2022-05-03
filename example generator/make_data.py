@@ -6,13 +6,13 @@ def make_data(file_name : str, dataset : str, generator : example, min_len : int
         data.write("defI: 0\ndefT: 0\n")
     if dataset == "test":
         data.write("defI: 0\ndefT: nan\n")
-    data.write("\n")
     for i in range(num):
+        data.write("\n")
         data.write(f"# {i}\n")
         sent = generator.generate_sentence(min_len, max_len)
         data.write(f"name: {sent.replace(' ', '_')}\n")
         data.write(generator.example_string(sent, dataset))
-        data.write("\n\n")
+        data.write("\n")
     data.close()
 
 if __name__ == "__main__":
